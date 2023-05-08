@@ -1,0 +1,121 @@
+<h1>
+  Your todo list
+</h1>
+
+
+<hr>
+
+<div>
+  <h2>
+    Add a new todo
+  </h2>
+
+  <form action="/insert_todo" method="post">
+    <div>
+      <label for="description_box">
+        Describe the task:
+      </label>
+
+      <input type="text" id="description_box" name="query_description">
+    </div>
+
+    <div>
+      <input type="hidden" id="status_box" name="query_status" value="next up">
+    </div>
+
+    <div>
+      <input type="hidden" id="user_id_box" name="query_user_id" value="<%= @current_user.id %>">
+    </div>
+
+    <button>
+      Add to Next Up
+    </button>
+  </form>
+</div>
+
+<div class="next_up">
+  <h2>Next Up</h2>
+  
+  <ul>
+    <% @list_of_todo.where({ :status => "next up" }).each do |todo| %>
+      <li>
+        <div>
+          <%= todo.description %>
+        </div>
+
+        <div>
+          <small>
+            Added <%= time_ago_in_words(todo.created_at) %> ago 
+            <a href="/delete_todo/<%= todo.id %>">Delete</a>
+          </small>
+        </div>
+
+        <div>
+          <form action="/modify_todo/<%= todo.id %>" method="post">
+            <input for="description" type="hidden" name="query_description" value="<%= todo.description %>">
+
+            <input for="status_update" type="hidden" name="query_status" value="in progress">
+
+            <input for="user" type="hidden" name="query_user_id" value="<%= @current_user.id %>">
+
+            <button>Move to In Progress</button>
+          </form>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+</div>
+
+<div class="in_progress">
+  <h2>In Progress</h2>
+  
+  <ul>
+    <% @list_of_todo.where({ :status => "in progress" }).each do |todo| %>
+      <li>
+        <div>
+          <%= todo.description %>
+        </div>
+
+        <div>
+          <small>
+            Started <%= time_ago_in_words(task.updated_at) %> ago 
+            <a href="/delete_todo/<%= todo.id %>">Delete</a>
+          </small>
+        </div>
+
+        <div>
+          <form action="/modify_todo/<%= todo.id %>" method="post">
+            <input for="description" type="hidden" name="query_description" value="<%= todo.description %>">
+
+            <input for="status_update" type="hidden" name="query_status" value="done">
+
+            <input for="user" type="hidden" name="query_user_id" value="<%= @current_user.id %>">
+
+            <button>Move to Done</button>
+          </form>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+</div>
+
+<div class="done">
+  <h2>Done</h2>
+  
+  <ul>
+    <% @list_of_todo.where({ :status => "done" }).each do |todo| %>
+      <li>
+        <div>
+          <%= todo.description %>
+        </div>
+
+        <div>
+          <small>
+            Completed at <%= todo.updated_at.strftime("%l:%M%P") %> on <%= todo.updated_at.strftime("%d-%b-%Y") %> 
+            <a href="/delete_todo/<%= todo.id %>">Delete</a>
+          </small>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+</div>
